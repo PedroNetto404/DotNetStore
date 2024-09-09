@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 public class Anything
 {
     public static void Main(string[] args)
@@ -6,6 +8,18 @@ public class Anything
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        builder.Services.AddCors();
+
+        var controllerBuilder = builder.Services.AddControllers();
+        controllerBuilder.AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
+        });
+
+        builder.Services.AddRouting(config =>
+        {
+            config.LowercaseUrls = true;
+        });
 
         var app = builder.Build();
 
@@ -15,21 +29,15 @@ public class Anything
             app.UseSwaggerUI();
         }
 
-        app.UseHttpsRedirection();
-
-        app.Use(async (context, next) =>
+        app.UseCors(config =>
         {
-            Console.WriteLine(context.Request.QueryString);
-            await next(context);
-            Console.WriteLine(context.Response.StatusCode);
+            config.AllowAnyOrigin();
         });
 
-        app.MapGet("/hello-world", () =>
-        {
-            return "Hello World!";
-        })
-        .WithName("Hello World")
-        .WithOpenApi();
+        app.UseHttpsRedirection();
+
+        app.UseRouting();
+        app.MapControllers();
 
         app.Run();
     }
