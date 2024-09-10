@@ -1,0 +1,55 @@
+USE master;
+
+CREATE DATABASE DotNetStore; 
+USE DotNetStore; 
+
+CREATE TABLE Buyer (
+    Id CHAR(38) PRIMARY KEY,
+    FirstName VARCHAR(50) NOT NULL,
+    LastName VARCHAR(100) NOT NULL,
+    Document CHAR(11) NOT NULL,
+    BirthDateUtc DATE NOT NULL
+);
+
+CREATE TABLE Category (
+    Id CHAR(38) PRIMARY KEY,
+    Title VARCHAR(50) NOT NULL,
+    Description VARCHAR(100) NOT NULL,
+    ImageUrl VARCHAR(500) 
+)
+
+CREATE TABLE Product (
+    Id CHAR(38) PRIMARY KEY,
+    Title VARCHAR(50) NOT NULL,
+    Description VARCHAR(100) NOT NULL,
+    ImageUrl VARCHAR(500) NOT NULL,
+    CategoryId CHAR(38) NOT NULL,
+    SalePrice DECIMAL(18, 2) NOT NULL,
+    CostPrice DECIMAL(18, 2), 
+
+    CONSTRAINT FK_PRODUCT_CATEGORY_CATEGORY_ID FOREIGN KEY (CategoryId)
+        REFERENCES Category(Id)
+)
+
+CREATE TABLE [Order] (
+    Id CHAR(38) PRIMARY KEY,
+    BuyerId CHAR(38) NOT NULL,
+    [Status] INTEGER NOT NULL,
+    CreatedAtUtc DATETIME NOT NULL DEFAULT GETDATE(),
+    UpdatedAtUtc DATETIME NOT NULL DEFAULT GETDATE(),
+    DeletedAtUtc DATETIME DEFAULT NULL,
+    CONSTRAINT FK_ORDER_BUYER_BUYER_ID FOREIGN KEY (BuyerId)
+        REFERENCES Buyer(Id)
+);
+
+CREATE TABLE [OrderItem] (
+    Id CHAR(38) PRIMARY KEY,
+    ProductId CHAR(38) NOT NULL,
+    OrderId CHAR(38) NOT NULL,
+    ProductPrice DECIMAL(18, 2) NOT NULL,
+    Quantity INTEGER NOT NULL CHECK (Quantity > 0),
+    CONSTRAINT FK_ORDER_ITEM_PRODUCT_PRODUCT_ID FOREIGN KEY (ProductId)
+        REFERENCES Product(Id),
+    CONSTRAINT FK_ORDER_ITEM_ORDER_ORDER_ID FOREIGN KEY (OrderId) 
+        REFERENCES [Order](Id)
+);
