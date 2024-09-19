@@ -3,6 +3,7 @@ USE master;
 CREATE DATABASE DotNetStore; 
 USE DotNetStore; 
 
+-- UP
 CREATE TABLE Buyer (
     Id CHAR(38) PRIMARY KEY,
     FirstName VARCHAR(50) NOT NULL,
@@ -53,3 +54,10 @@ CREATE TABLE [OrderItem] (
     CONSTRAINT FK_ORDER_ITEM_ORDER_ORDER_ID FOREIGN KEY (OrderId) 
         REFERENCES [Order](Id)
 );
+
+--DOWN
+DROP TABLE [OrderItem];
+DROP TABLE [Order];
+DROP TABLE [Product];
+DROP TABLE [Category];
+DROP TABLE [Buyer];
