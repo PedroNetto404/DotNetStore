@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DotNetStore.Models.Requests;
+namespace DotNetStore.Api.Models.Requests;
 
 public record GetOrdersRequest : PagedRequest
 {
